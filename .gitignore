@@ -26,3 +26,8 @@ node_modules/
 dist/
 build/
 .DS_Store
+
+frontend/.env.development
+k8s/secrets.yaml
+*.pem
+*.key
