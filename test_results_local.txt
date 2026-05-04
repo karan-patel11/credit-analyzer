@@ -1,0 +1,88 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.9, pytest-8.3.5, pluggy-1.6.0 -- /Users/karanpatel/Downloads/credit-analyzer-main/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/karanpatel/Downloads/credit-analyzer-main
+configfile: pytest.ini
+plugins: asyncio-0.26.0, cov-6.1.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collecting ... collected 53 items
+
+tests/test_autocomplete.py::test_autocomplete_requires_two_characters PASSED [  1%]
+tests/test_autocomplete.py::test_autocomplete_returns_prefix_matches PASSED [  3%]
+tests/test_autocomplete.py::test_autocomplete_is_limited_to_ten_results PASSED [  5%]
+tests/test_autocomplete.py::test_autocomplete_prefers_high_application_merchants PASSED [  7%]
+tests/test_autocomplete.py::test_autocomplete_uses_cache PASSED          [  9%]
+tests/test_credit_pipeline.py::test_parse_bank_statement_extracts_metrics PASSED [ 11%]
+tests/test_credit_pipeline.py::test_parse_bank_statement_skips_malformed_rows PASSED [ 13%]
+tests/test_credit_pipeline.py::test_parse_bank_statement_raises_when_no_valid_rows PASSED [ 15%]
+tests/test_credit_pipeline.py::test_sync_credit_analysis_returns_memo PASSED [ 16%]
+tests/test_credit_pipeline.py::test_async_credit_analysis_returns_job_and_status PASSED [ 18%]
+tests/test_credit_pipeline.py::test_credit_analysis_uses_default_bank_analysis_when_statement_absent PASSED [ 20%]
+tests/test_credit_pipeline.py::test_credit_analysis_generates_declining_flags PASSED [ 22%]
+tests/test_credit_pipeline.py::test_credit_analysis_rejects_unreasonable_loan_amount PASSED [ 24%]
+tests/test_credit_pipeline.py::test_status_returns_404_for_unknown_job PASSED [ 26%]
+tests/test_credit_pipeline.py::test_score_risk_produces_expected_recommendation_band PASSED [ 28%]
+tests/test_integration.py::test_health_endpoint_reports_service_metadata PASSED [ 30%]
+tests/test_integration.py::test_readiness_endpoint_checks_database_and_redis PASSED [ 32%]
+tests/test_integration.py::test_merchant_profile_returns_aggregated_application_stats PASSED [ 33%]
+tests/test_integration.py::test_search_analytics_reflect_logged_searches PASSED [ 35%]
+tests/test_integration.py::test_concurrent_search_requests PASSED        [ 37%]
+tests/test_risk_scoring.py::test_loan_to_revenue_brackets_affect_score[250000-30] PASSED [ 39%]
+tests/test_risk_scoring.py::test_loan_to_revenue_brackets_affect_score[450000-20] PASSED [ 41%]
+tests/test_risk_scoring.py::test_loan_to_revenue_brackets_affect_score[700000-10] PASSED [ 43%]
+tests/test_risk_scoring.py::test_cash_flow_trend_changes_risk_band[Positive-Low] PASSED [ 45%]
+tests/test_risk_scoring.py::test_cash_flow_trend_changes_risk_band[Stable-Medium] PASSED [ 47%]
+tests/test_risk_scoring.py::test_cash_flow_trend_changes_risk_band[Declining-Medium] PASSED [ 49%]
+tests/test_risk_scoring.py::test_overdraft_history_penalizes_score[0-90] PASSED [ 50%]
+tests/test_risk_scoring.py::test_overdraft_history_penalizes_score[2-80] PASSED [ 52%]
+tests/test_risk_scoring.py::test_overdraft_history_penalizes_score[5-70] PASSED [ 54%]
+tests/test_risk_scoring.py::test_cash_flow_coverage_formatting[200000-66.7%] PASSED [ 56%]
+tests/test_risk_scoring.py::test_cash_flow_coverage_formatting[90000-30.0%] PASSED [ 58%]
+tests/test_risk_scoring.py::test_cash_flow_coverage_formatting[30000-10.0%] PASSED [ 60%]
+tests/test_search.py::test_search_orders_exact_before_partial_and_industry_match PASSED [ 62%]
+tests/test_search.py::test_search_filters_by_industry PASSED             [ 64%]
+tests/test_search.py::test_search_filters_by_city PASSED                 [ 66%]
+tests/test_search.py::test_search_filters_by_state PASSED                [ 67%]
+tests/test_search.py::test_search_filters_by_risk_tier PASSED            [ 69%]
+tests/test_search.py::test_search_filters_by_min_score PASSED            [ 71%]
+tests/test_search.py::test_search_filters_by_max_score PASSED            [ 73%]
+tests/test_search.py::test_search_sorts_by_approval_rate_desc PASSED     [ 75%]
+tests/test_search.py::test_search_sorts_by_risk_score_asc PASSED         [ 77%]
+tests/test_search.py::test_search_sorts_by_revenue_desc PASSED           [ 79%]
+tests/test_search.py::test_search_page_zero_clamps_to_one PASSED         [ 81%]
+tests/test_search.py::test_search_page_size_above_max_is_clamped PASSED  [ 83%]
+tests/test_search.py::test_search_page_beyond_results_returns_empty_page PASSED [ 84%]
+tests/test_search.py::test_search_cache_miss_then_hit_uses_redis PASSED  [ 86%]
+tests/test_search.py::test_search_logs_every_request PASSED              [ 88%]
+tests/test_search.py::test_search_without_query_returns_seeded_directory PASSED [ 90%]
+tests/test_webhooks.py::test_webhook_accepts_valid_signature PASSED      [ 92%]
+tests/test_webhooks.py::test_webhook_rejects_invalid_signature PASSED    [ 94%]
+tests/test_webhooks.py::test_webhook_allows_unsigned_payload PASSED      [ 96%]
+tests/test_webhooks.py::test_webhook_rejects_invalid_json PASSED         [ 98%]
+tests/test_webhooks.py::test_webhook_echoes_event_and_job_id PASSED      [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.12.9-final-0 _______________
+
+Name                                    Stmts   Miss  Cover   Missing
+---------------------------------------------------------------------
+backend/__init__.py                         0      0   100%
+backend/config.py                          49      7    86%   77-82, 86
+backend/database.py                        34      2    94%   38, 71
+backend/main.py                            76     12    84%   66-71, 76, 111-116, 131-133
+backend/models/__init__.py                  0      0   100%
+backend/models/database_models.py          51      0   100%
+backend/models/schemas.py                 168      0   100%
+backend/routers/__init__.py                 0      0   100%
+backend/routers/analytics.py               11      0   100%
+backend/routers/credit.py                  31      0   100%
+backend/routers/health.py                  27      7    74%   32-33, 37-38, 41, 57-58
+backend/routers/search.py                  27      2    93%   87-88
+backend/seed_data.py                       48     15    69%   76, 114-121, 127-132, 136
+backend/services/__init__.py                0      0   100%
+backend/services/analytics_service.py      14      0   100%
+backend/services/credit_service.py        211     32    85%   69, 179-180, 269-323, 411-424, 479, 494-513, 520, 532
+backend/services/search_service.py        106     11    90%   157, 225-250
+---------------------------------------------------------------------
+TOTAL                                     853     88    90%
+============================== 53 passed in 5.37s ==============================

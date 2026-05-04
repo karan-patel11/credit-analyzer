@@ -1,0 +1,100 @@
+services:
+  kaps-mysql:
+    image: mysql:8.0
+    container_name: kaps-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - kaps-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kaps-network
+
+  kaps-redis:
+    image: redis:7-alpine
+    container_name: kaps-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - kaps-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kaps-network
+
+  kaps-backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: kaps-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: mysql+mysqlconnector://${MYSQL_USER}:${MYSQL_PASSWORD}@kaps-mysql:3306/${MYSQL_DATABASE}
+      REDIS_URL: redis://kaps-redis:6379/0
+      AUTO_SEED_MERCHANTS: "true"
+    depends_on:
+      kaps-mysql:
+        condition: service_healthy
+      kaps-redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live', timeout=3)"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kaps-network
+
+  kaps-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kaps-frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      REACT_APP_API_URL: http://localhost:8000
+    depends_on:
+      kaps-backend:
+        condition: service_healthy
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5173"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kaps-network
+
+volumes:
+  kaps-mysql-data:
+  kaps-redis-data:
+
+networks:
+  kaps-network:
+    driver: bridge

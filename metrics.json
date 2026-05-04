@@ -1,0 +1,22 @@
+{
+  "test_dataset": {
+    "merchant_records_seeded": 600,
+    "industries_covered": 12,
+    "cities_covered": 50,
+    "industry_source_count": 12,
+    "city_source_count": 50
+  },
+  "api_routes": 12,
+  "search_benchmark_ms": {
+    "p50": 1.3583330000983551,
+    "p95": 3.847083993605338,
+    "p99": 11.1479170009261
+  },
+  "autocomplete_benchmark_ms": {
+    "p50": 0.5452909972518682,
+    "p95": 0.9898749995045364,
+    "p99": 1.65891699725762
+  },
+  "cache_hit_latency_ms": 1.4567049982724711,
+  "cold_search_latency_ms": 4.02734999981476
+}
