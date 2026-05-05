@@ -1,6 +1,7 @@
-# KAPS AI — Buy Now, Pay Later Marketplace Platform
+# BNPL Marketplace — Buy Now, Pay Later Platform
 
-[![CI](https://github.com/karan-patel11/credit-analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/karan-patel11/credit-analyzer/actions/workflows/ci.yml)
+**Live Demo:** https://bnplmarketplace.vercel.app/  
+**GitHub Repo:** https://github.com/karan-patel11/BNPL-Marketplace
 
 A production-grade BNPL (Buy Now, Pay Later) marketplace platform combining merchant discovery with real-time consumer credit decisioning. Consumers search merchants, see personalized pre-approval amounts, and get instant credit decisions with flexible payment plans. Merchants are evaluated for platform onboarding through an AI-powered financial review pipeline.
 
@@ -9,14 +10,20 @@ Built with Python, FastAPI, MySQL, Redis, React, Docker, and Kubernetes.
 ## Architecture
 
 Consumer Flow:
-  Search merchants → See pre-approvals → Check eligibility → Get payment plans
 
-Merchant Flow:  
-  Upload financials → Risk assessment → Onboarding decision → Join marketplace
+```text
+Search merchants → See pre-approvals → Check eligibility → Get payment plans
+```
+
+Merchant Flow:
+
+```text
+Upload financials → Risk assessment → Onboarding decision → Join marketplace
+```
 
 ```text
 ┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   KAPS AI PLATFORM                                           │
+│                              BNPL MARKETPLACE PLATFORM                                       │
 ├───────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                               │
 │   ┌────────────────────────────── Frontend ───────────────────────────────┐                   │
@@ -54,7 +61,7 @@ Merchant Flow:
 │        └────────────────────┘             │ - job status cache │                              │
 │                                           └────────────────────┘                              │
 │                                                                                               │
-│   Kubernetes deploys the frontend, backend, MySQL, and Redis with probes, ingress, and HPA. │
+│   Kubernetes deploys the frontend, backend, MySQL, and Redis with probes, ingress, and HPA.    │
 └───────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -69,18 +76,21 @@ Merchant Flow:
 | Testing | pytest, pytest-cov |
 | Developer Tooling | Ruff, mypy |
 | Infrastructure | Docker Compose, Kubernetes, GitHub Actions |
+| Deployment | Vercel |
 
 ## Features
 
 - Relevance-ranked merchant search with filtering, autocomplete, and pagination
 - Personalized consumer credit pre-approval across all merchants
-- Instant credit decisioning with payment plan generation (Pay in 4/6/12/24)
+- Instant credit decisioning with payment plan generation: Pay in 4, 6, 12, or 24
 - AI-powered merchant onboarding review with financial risk assessment
 - Real-time search analytics and platform health monitoring
+- Dockerized backend/frontend setup with Kubernetes deployment manifests
+- CI pipeline through GitHub Actions
 
 ## Search Relevance
 
-KAPS AI ranks merchants with a weighted relevance formula that blends textual affinity with quality and popularity signals:
+BNPL Marketplace ranks merchants with a weighted relevance formula that blends textual affinity with quality and popularity signals:
 
 ```python
 relevance_score = (
@@ -154,7 +164,7 @@ curl -X POST "http://localhost:8000/credit/preapproval-batch" \
   }'
 ```
 
-### Merchant Onboarding (Credit Analysis)
+### Merchant Onboarding Credit Analysis
 
 ```bash
 curl -X POST "http://localhost:8000/analyze" \
@@ -216,38 +226,55 @@ curl "http://localhost:8000/health/live"
 - Search P95 latency: `3.847083993605338 ms`
 - Autocomplete P95 latency: `0.9898749995045364 ms`
 - Search with Redis cache hit: `1.4567049982724711 ms`
-- Search without cache (cold): `4.02734999981476 ms`
+- Search without cache, cold: `4.02734999981476 ms`
 - Merchant records seeded: `600`
 - Test coverage: `90%`
 - Tests passing: `53/53`
 
 ## Screenshots
 
-### Merchant Search & Discovery
+### Intro Page
 
-![Merchant Search](docs/screenshots/merchant-search.png)
+<img width="2558" height="994" alt="Screenshot 2026-05-04 at 11 18 48 PM" src="https://github.com/user-attachments/assets/f6bba20c-c8f4-482b-a810-a0264455d8ea" />
+
+
+### Platform Health Dashboard 
+
+<img width="2558" height="994" alt="Screenshot 2026-05-04 at 11 18 59 PM" src="https://github.com/user-attachments/assets/958fe0a1-4d7f-4d25-ab7b-1258862aea82" />
+
 
 ### Credit Analysis Pipeline
 
-![Credit Analysis](docs/screenshots/credit-analysis.png)
+<img width="2558" height="994" alt="Screenshot 2026-05-04 at 11 19 54 PM" src="https://github.com/user-attachments/assets/1f39802a-0b89-4943-ab3c-dcf62e958614" />
 
-### Platform Health Dashboard
-
-![Platform Stats](docs/screenshots/platform-stats.png)
 
 ## Quick Start
 
 ### Docker Compose
 
 1. Copy `.env.example` to `.env`.
+
+```bash
+cp .env.example .env
+```
+
 2. Start the full stack:
 
 ```bash
 docker compose up --build
 ```
 
-3. Open the frontend at `http://localhost:5173`.
-4. Open the backend docs at `http://localhost:8000/docs`.
+3. Open the frontend:
+
+```text
+http://localhost:5173
+```
+
+4. Open the backend API docs:
+
+```text
+http://localhost:8000/docs
+```
 
 ### Local Backend
 
@@ -256,14 +283,23 @@ python -m pip install -r backend/requirements.txt
 uvicorn backend.main:app --reload
 ```
 
+### Local Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ## Kubernetes
+
+Before applying Kubernetes manifests, create your own Kubernetes secrets file locally. Do not commit real secrets to GitHub.
 
 Apply the manifests in order:
 
 ```bash
 kubectl apply -f k8s/namespace.yaml
 kubectl apply -f k8s/configmap.yaml
-kubectl apply -f k8s/secrets.yaml
 kubectl apply -f k8s/mysql-service.yaml
 kubectl apply -f k8s/mysql-statefulset.yaml
 kubectl apply -f k8s/redis-service.yaml
@@ -287,6 +323,18 @@ tests/
 ├── test_risk_scoring.py
 ├── test_webhooks.py
 └── test_integration.py
+```
+
+## Repository
+
+```text
+https://github.com/karan-patel11/BNPL-Marketplace
+```
+
+## Live Demo
+
+```text
+https://bnplmarketplace.vercel.app/
 ```
 
 Built by [Karan Patel](https://karan-patel11.github.io/PortfolioWebsite)
